@@ -112,13 +112,13 @@ window.addEventListener("load", function () {
                                 break;
                             case "Deuda":
                                 td.innerText = reg.deuda_act;
-                                td.classList.add(reg.co_cli);
+                                td.classList.add(`cli-${reg.co_cli.trim()}`);
                                 td.setAttribute("data-cell", "deuda")
                                 td.setAttribute("contenteditable", true);
                                 break;
                             case "Observaciones":
                                 td.innerText = reg.coment;
-                                td.classList.add(reg.co_cli);
+                                td.classList.add(`cli-${reg.co_cli.trim()}`);
                                 td.setAttribute("data-cell", "observaciones")
                                 td.setAttribute("contenteditable", true);
                                 break;
@@ -144,8 +144,8 @@ window.addEventListener("load", function () {
                         let coCli = this.getAttribute("data-co-cli");
                         let data = new FormData();
                         data.append("co-cli", coCli);
-                        data.append("deuda", document.querySelector(`#clientes-registrados-tbl tbody tr td.${coCli}[data-cell=deuda]`).innerText);
-                        data.append("coment", document.querySelector(`#clientes-registrados-tbl tbody tr td.${coCli}[data-cell=observaciones]`).innerText);
+                        data.append("deuda", document.querySelector(`#clientes-registrados-tbl tbody tr td.cli-${coCli}[data-cell=deuda]`).innerText);
+                        data.append("coment", document.querySelector(`#clientes-registrados-tbl tbody tr td.cli-${coCli}[data-cell=observaciones]`).innerText);
 
                         // Enviar datos para actualizar
                         reiniciar_aviso_usuario();
@@ -186,6 +186,7 @@ window.addEventListener("load", function () {
                 });
             })
             .catch(err => {
+                console.log(`ERROR: ${err}`);
                 document.querySelector("#aviso-usuario .alert").classList.add("alert-danger");
                 document.querySelector("#aviso-usuario #mensaje").innerText = "Error al consultar registros, intente nuevamente."
                 $("#aviso-usuario").modal("show");

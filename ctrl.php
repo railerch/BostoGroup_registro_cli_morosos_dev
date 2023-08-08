@@ -11,14 +11,27 @@ try {
     echo "ERROR EN CONEXIOn: " . $e->getMessage();
 }
 
+// FUNCIONES
+# ====================
+function depurar_texto(string $txt, bool $comment = false): string
+{
+    if ($comment) {
+        $tmp = trim(addslashes(strip_tags($txt)));
+    } else {
+        $tmp = strtoupper(trim(addslashes(strip_tags($txt))));
+    }
+
+    return $tmp;
+}
+
 // REGISTROS
 # ====================
 if (@$_GET['registrar-cliente']) {
-    $coCli      = strtoupper($_POST['co-cli']);
-    $cliDes     = strtoupper($_POST['cli-des']);
-    $cedulaRif  = strtoupper($_POST['cedula-rif']);
+    $coCli      = depurar_texto($_POST['co-cli']);
+    $cliDes     = depurar_texto($_POST['cli-des']);
+    $cedulaRif  = depurar_texto($_POST['cedula-rif']);
     $deuda      = floatVal($_POST['deuda']);
-    $coment     = $_POST['observaciones'];
+    $coment     = depurar_texto($_POST['observaciones'], true);
 
     try {
         $stmt = $conn->prepare(
@@ -49,9 +62,9 @@ if (@$_GET['registrar-cliente']) {
 }
 
 if (@$_GET['actualizar-cliente']) {
-    $coCli  = $_POST['co-cli'];
+    $coCli  = depurar_texto($_POST['co-cli']);
     $deuda  = floatVal($_POST['deuda']);
-    $coment = $_POST['coment'];
+    $coment = depurar_texto($_POST['coment'], true);
 
     try {
         $stmt = $conn->prepare("UPDATE cli_morosos SET coment = '$coment', deuda_act = $deuda WHERE co_cli = '$coCli'");
@@ -60,6 +73,7 @@ if (@$_GET['actualizar-cliente']) {
     } catch (PDOException $e) {
         echo 'ERROR: ' . $e->getMessage();
     }
+
     exit();
 }
 
@@ -72,6 +86,7 @@ if (@$_GET['eliminar-cliente']) {
     } catch (PDOException $e) {
         echo 'ERROR: ' . $e->getMessage();
     }
+
     exit();
 }
 
@@ -83,5 +98,6 @@ if (@$_GET['consultar-clientes']) {
     } catch (PDOException $e) {
         echo 'ERROR: ' . $e->getMessage();
     }
+
     exit();
 }
